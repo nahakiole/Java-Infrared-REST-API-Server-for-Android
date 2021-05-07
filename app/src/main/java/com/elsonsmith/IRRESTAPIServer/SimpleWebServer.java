@@ -170,8 +170,8 @@ public class SimpleWebServer implements Runnable {
     protected int[] dec2SamsungIRDec(double[] irDec) {
         int[] pattern = new int[irDec.length];
         for (int i = 0; i < irDec.length; i++) {
-            irDec[i] = irDec[i] * 26.3;
-            pattern[i] += (int)Math.rint(irDec[i]);
+            irDec[i] = irDec[i];
+            pattern[i] += (int) irDec[i];
         }
         return pattern;
     }
@@ -182,6 +182,8 @@ public class SimpleWebServer implements Runnable {
         mCIR = (ConsumerIrManager)SimpleWebServer.context.getSystemService(Context.CONSUMER_IR_SERVICE);
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            Log.d("ANDROID",fileName);
             if (fileName.equals("") || fileName.equals("/")) {
                 input = new ByteArrayInputStream("Hello World".getBytes(StandardCharsets.UTF_8));
             }
@@ -194,9 +196,11 @@ public class SimpleWebServer implements Runnable {
                     for (String IRcmd : IRcmdProcess) {
                         IRcmds.add(Double.valueOf(IRcmd));
                     }
-                    Double[] IRcmdsArray = IRcmds.toArray(new Double[0]);
+                    Double[] IRcmdsArray = IRcmds.toArray(new Double[0]); 
                     double[] IRcmdsArrayFinal = ArrayUtils.toPrimitive(IRcmdsArray);
                     int[] pattern = dec2SamsungIRDec(IRcmdsArrayFinal);
+
+                    Log.d("ANDROID", Arrays.toString(pattern));
                     mCIR.transmit(38000, pattern);
                     input = new ByteArrayInputStream("IR cmd sent".getBytes(StandardCharsets.UTF_8));
                 }
